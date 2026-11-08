@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const moviesFilePath = path.join(__dirname, "../data/movies.json");
 
-// Function to read movies
+// Read data from the movie file
 async function readMovies() {
   try {
     // Check if file path exists first
@@ -27,4 +27,9 @@ async function readMovies() {
     console.log(error);
     throw error;
   }
+}
+
+// Write the data back to the movie file
+async function writeMovies(movies) {
+  await fs.writeFile(moviesFilePath, JSON.stringify(movies, null, 2))
 }
