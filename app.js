@@ -1,3 +1,17 @@
-import express from 'express'
-console.log("Group4 project");
-console.log("lets start the project guys")
+import express from 'express';
+import movieRoute from './src/routes';
+const port = 3000;
+const app = express();
+
+
+// Middleware to parse JSON from the body
+app.use(express.json());
+
+
+//This creates routes for movies watchlists
+app.use("/movies", movieRoute)
+
+// Start server
+app.listen(port, (req, res)=>{
+    console.log(`Server is running on localhost:${port}`)
+})
