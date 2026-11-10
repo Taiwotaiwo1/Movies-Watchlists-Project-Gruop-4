@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMovies,getMovieById,createMovie, getUnwatchedMovies, } from './services';
+import { getAllMovies,getMovieById,createMovie, getUnwatchedMovies, deleteMovieById } from './services';
 const router = express.Router();
 
 // get all movies
@@ -29,6 +29,30 @@ router.get("/:1d", async (req, res)=>{
     })
 })
 
+// create movies:
+router.post("/", async (req, res) =>{
+    const newMovie = await createMovie(req.body);
+    res.status(201).json({
+        message:"Movie created successfully",
+        data: newMovie
+    })
+})
+
+// delete movies
+router.delete("/:id", async (req, res) =>{
+    const {id} = req.params;
+
+    const deleted = await deleteMovieById(id);
+
+    if(!deleted){
+        return res.status(404).json({
+            success: false,
+            message: "Movie not found"
+        });
+    }
+    res.status(204).send();
+});
+
 // get unWached movies
 router.get("/unwatched", async (req, res)=>{
     const movies = await getUnwatchedMovies();
@@ -38,3 +62,5 @@ router.get("/unwatched", async (req, res)=>{
         data: movies
     })
 })
+
+export default router
