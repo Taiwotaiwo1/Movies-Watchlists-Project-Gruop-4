@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMovies,getMovieById,createMovie, deleteMovieById, updateMovie, getUnwatchedMovies, updateMovie, updateMovie } from './services.js';
+import { getAllMovies,getMovieById,createMovie, deleteMovieById,  getUnwatchedMovies, updateMovie } from './services.js';
 import { validateUpdateMovie } from './utils.js';
 const router = express.Router();
 
@@ -52,12 +52,13 @@ router.get("/:id", async (req, res)=>{
 })
 
 //update movies
+
 router.put("/:id", async(req, res)=>{
     try{
         const {id} = req.params;
+
         //call validation function
      const validation = validateUpdateMovie(req.body);
-     //const{title, director, year} = req.body;
      
      // check validation result
      if(!validation.valid){
@@ -66,10 +67,10 @@ router.put("/:id", async(req, res)=>{
             message: validation.message
         });
      }
-     // update movie
-     const updateMovie = await updateMovie(id, req.body);
+
+     const updateMovies = await updateMovie(id, req.body);
      // check if movie exists
-     if(!updateMovie){
+     if(!updateMovies){
         return res.status(404).json({
             success: false,
             message: "Movie not found"
