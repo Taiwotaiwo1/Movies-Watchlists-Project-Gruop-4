@@ -12,6 +12,26 @@ res.status(200).json({
 })
 });
 
+// create movies:
+router.post("/", async (req, res) =>{
+    const newMovie = await createMovie(req.body);
+    res.status(201).json({
+        message:"Movie created successfully",
+        data: newMovie
+    })
+})
+
+// get unWached movies
+router.get("/unwatched", async (req, res)=>{
+    const movies = await getUnwatchedMovies();
+
+    res.status(200).json({
+        success:true,
+        count: movies.length,
+        data: movies
+    })
+})
+
 
 // get movie by id
 router.get("/:id", async (req, res)=>{
@@ -31,16 +51,6 @@ router.get("/:id", async (req, res)=>{
 })
 
 
-// create movies:
-router.post("/", async (req, res) =>{
-    const newMovie = await createMovie(req.body);
-    res.status(201).json({
-        message:"Movie created successfully",
-        data: newMovie
-    })
-})
-
-
 // delete movies
 router.delete("/:id", async (req, res) =>{
     const {id} = req.params;
@@ -55,16 +65,5 @@ router.delete("/:id", async (req, res) =>{
     }
     res.status(204).send();
 });
-
-
-// get unWached movies
-router.get("/unwatched", async (req, res)=>{
-    const movies = await getUnwatchedMovies();
-    res.status(200).json({
-        success:true,
-        count: movies.length,
-        data: movies
-    })
-})
 
 export default router

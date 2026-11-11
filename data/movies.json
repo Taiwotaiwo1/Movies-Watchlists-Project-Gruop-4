@@ -3,9 +3,27 @@
     "id": "e2f57c30-f97e-44b1-94f9-90d79eb74808",
     "title": "The Demon SLayer",
     "director": "Nikamoto",
-    "year": "2022",
+    "year": 2022,
     "watched": false,
     "createdAt": "2026-11-11T21:25:51.540Z",
     "updatedAt": "2026-11-11T21:25:51.540Z"
+  },
+  {
+    "id": "1105bb91-e49e-430e-b83b-c3b012ea108a",
+    "title": "The Blacklists",
+    "director": "Micheal Surges",
+    "year": 2021,
+    "watched": false,
+    "createdAt": "2026-11-11T22:02:42.692Z",
+    "updatedAt": "2026-11-11T22:02:42.692Z"
+  },
+  {
+    "id": "18ef965d-692b-4cfe-957f-ce38c8ffd725",
+    "title": "Fast and Furios 6",
+    "director": "Tom Hank",
+    "year": 2021,
+    "watched": true,
+    "createdAt": "2026-11-11T22:09:22.286Z",
+    "updatedAt": "2026-11-11T22:09:22.286Z"
   }
 ]
