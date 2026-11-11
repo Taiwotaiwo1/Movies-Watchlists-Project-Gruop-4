@@ -3,7 +3,7 @@ import { getAllMovies,getMovieById,createMovie, getUnwatchedMovies, deleteMovieB
 const router = express.Router();
 
 // get all movies
-router.get("/movies", async(req, res) =>{
+router.get("/", async(req, res) =>{
 const movies = await getAllMovies();
 res.status(200).json({
     success: true,
