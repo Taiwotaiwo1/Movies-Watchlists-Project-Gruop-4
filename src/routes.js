@@ -12,6 +12,7 @@ res.status(200).json({
 })
 });
 
+
 // get movie by id
 router.get("/:1d", async (req, res)=>{
     const{id} = req.params;
@@ -29,6 +30,7 @@ router.get("/:1d", async (req, res)=>{
     })
 })
 
+
 // create movies:
 router.post("/", async (req, res) =>{
     const newMovie = await createMovie(req.body);
@@ -37,6 +39,7 @@ router.post("/", async (req, res) =>{
         data: newMovie
     })
 })
+
 
 // delete movies
 router.delete("/:id", async (req, res) =>{
@@ -52,6 +55,7 @@ router.delete("/:id", async (req, res) =>{
     }
     res.status(204).send();
 });
+
 
 // get unWached movies
 router.get("/unwatched", async (req, res)=>{
