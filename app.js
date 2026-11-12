@@ -1,5 +1,5 @@
 import express from 'express';
-import movieRoute from './src/routes';
+import movieRoute from './src/routes.js'; // added .js to routes because it is a single file
 const port = 3000;
 const app = express();
 
@@ -13,5 +13,6 @@ app.use("/movies", movieRoute)
 
 // Start server
 app.listen(port, (req, res)=>{
-    console.log(`Server is running on localhost:${port}`)
+    // updated from localhost:${port} to http://localhost:${port}
+    console.log(`Server is running on http://localhost:${port}`)
 })

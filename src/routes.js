@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMovies,getMovieById,createMovie, getUnwatchedMovies, deleteMovieById } from './services';
+import { getAllMovies,getMovieById,createMovie, getUnwatchedMovies } from './services.js'; // there is no deleteMovie function to export so i removed it
 const router = express.Router();
 
 // get all movies
@@ -14,7 +14,8 @@ res.status(200).json({
 
 
 // get movie by id
-router.get("/:1d", async (req, res)=>{
+// changed from 1d to id
+router.get("/:id", async (req, res)=>{
     const{id} = req.params;
     const movie = getMovieById(id);
 
