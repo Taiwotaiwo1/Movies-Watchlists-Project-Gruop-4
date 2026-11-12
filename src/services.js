@@ -74,3 +74,27 @@ export async function getUnwatchedMovies() {
 
   return movies.filter((movie) => !movie.watched);
 }
+
+export async function updateMovie(id, data) {
+  const movies = await readMovies();
+  const movie = movies.find((m) => m.id === id);
+  if (!movie) return null;
+
+  for (const key in data) {
+    movie[key] = data[key] ?? movie[key];
+  }
+  movie["updatedAt"] = new Date().toISOString();
+  await writeMovies(movies);
+  return movie;
+}
+
+export async function deleteMovieById(id) {
+  const movies = await readMovies();
+  const index = movies.findIndex((m) => m.id === id);
+  if (index === -1) return null;
+
+  const deleted = movies[index];
+  movies.splice(index, 1);
+  await writeMovies(movies);
+  return deleted;
+}
