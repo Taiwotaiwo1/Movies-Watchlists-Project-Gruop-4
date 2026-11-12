@@ -48,7 +48,7 @@ export async function getMovieById(id) {
 // Create a movie.
 export async function createMovie(data) {
   const movies = await readMovies();
-  const { title, director, year } = data;
+  const { title, director, year, watched } = data;
   const now = new Date().toISOString();
 
   const newMovieData = {
@@ -56,7 +56,7 @@ export async function createMovie(data) {
     title,
     director,
     year,
-    watched: false,
+    watched,
     createdAt: now,
     updatedAt: now,
   };
@@ -69,6 +69,8 @@ export async function createMovie(data) {
 // Get list of unwatched movies
 export async function getUnwatchedMovies() {
   const movies = await readMovies();
+
+  console.log("movies: ", movies)
 
   return movies.filter((movie) => !movie.watched);
 }
