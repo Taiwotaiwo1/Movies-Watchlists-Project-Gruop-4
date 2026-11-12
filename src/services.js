@@ -70,7 +70,6 @@ export async function createMovie(data) {
 export async function getUnwatchedMovies() {
   const movies = await readMovies();
 
-  console.log("movies: ", movies)
-
   return movies.filter((movie) => !movie.watched);
 }
+ 
