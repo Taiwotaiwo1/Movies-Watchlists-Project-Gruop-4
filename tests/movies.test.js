@@ -1,6 +1,7 @@
 import { describe, test, expect } from "@jest/globals";
 import request from "supertest"
 import app from '../app.js'
+import {readMovies} from '../src/services.js'
 
 describe('Movies API', () => {
     //Test for the Get Movies Route
@@ -28,7 +29,16 @@ describe('Movies API', () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('message');
         });
+
+        test('returns 200 and actual data of existing ID', async () => {
+            const res = await request(app).get('/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808');
+            const movies = await readMovies()
+            expect(res.status).toBe(200);
+            expect(res.body.data).toMatchObject(movies[0]);
+        });
     });
+
+    
 
 
 })
