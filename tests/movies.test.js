@@ -19,7 +19,7 @@ describe('Movies API', () => {
             expect(Array.isArray(res.body.data)).toBe(true);
             expect(res.body.data.length).toBe(res.body.count);
         })
-    })
+    });
     
     // Test for Get movies by an ID
     describe('GET /movies/:id', () => {
@@ -37,6 +37,23 @@ describe('Movies API', () => {
             expect(res.body.data).toMatchObject(movies[0]);
         });
     });
+     
+    //Test to GET all unwatched movies 
+     describe('GET /movies/unwatched', () => {
+        test('returns status code 200 and an array of unwatched movies array', async () => {
+            const res = await request(app).get('/movies/unwatched');
+
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual(
+                expect.objectContaining({
+                success: true,
+                count: expect.any(Number),
+                })
+            );
+            expect(Array.isArray(res.body.data)).toBe(true);
+            expect(res.body.data.length).toBe(res.body.count);
+        })
+    })
 
     
 
