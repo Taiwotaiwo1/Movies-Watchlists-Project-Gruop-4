@@ -19,6 +19,16 @@ describe('Movies API', () => {
             expect(res.body.data.length).toBe(res.body.count);
         })
     })
+    
+    // Test for Get movies by an ID
+    describe('GET /movies/:id', () => {
+        test('returns 404 for a movie that do not exist', async () => {
+        const res = await request(app).get('/movies/does-not-exist');
+
+        expect(res.status).toBe(404);
+        expect(res.body).toHaveProperty('message');
+        });
+    });
 
 
 })
