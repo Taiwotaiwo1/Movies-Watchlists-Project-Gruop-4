@@ -55,6 +55,35 @@ describe('Movies API', () => {
         })
     })
 
+    // Test to Create a New Movie
+    describe('POST /movies', () => {
+    test('creates a new movie', async () => {
+      const payload = {
+            title: "Fast and Furios 6",
+            director: "Tom Hank",
+            year: 2021,
+            watched: true
+        }
+
+      const res = await request(app)
+        .post('/movies')
+        .set('Content-Type', 'application/json')
+        .send(payload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toMatchObject(payload);
+      expect(res.body.data).toHaveProperty('id');
+    });
+
+    test('rejects invalid payload with 400', async () => {
+      const res = await request(app)
+        .post('/movies')
+        .send({});
+
+      expect(res.status).toBe(400);
+    });
+  });
+
     
 
 
