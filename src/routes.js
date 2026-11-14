@@ -7,7 +7,7 @@ import {
   updateMovie, 
   deleteMovieById 
 } from './services.js';
-import { validateUpdateMovie } from './utils.js';
+import { validateCreateMovie, validateUpdateMovie } from './utils.js';
 
 const router = express.Router();
 
@@ -23,6 +23,16 @@ router.get("/", async(req, res) =>{
 
 // create movies:
 router.post("/", async (req, res) =>{
+    // 1. Validate incoming data for creation
+    const validation = validateCreateMovie(req.body);
+    if (!validation.valid) {
+        return res.status(400).json({
+            success: false,
+            message: validation.message
+        });
+    }
+
+    // 2. Perform the creation via services
     const newMovie = await createMovie(req.body);
     res.status(201).json({
         success: true,
