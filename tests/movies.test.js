@@ -131,10 +131,23 @@ describe('Movies API', () => {
         expect(res.status).toBe(400);
         });
      });
-
+     
+     //Test for Deleting movies
      describe('DELETE /movies/:id', () => {
         test('Deleting an existing user expects 204', async() => {
-            
+             const movies = await readMovies()
+             const res = await request(app)
+            .delete(`/movies/${movies[movies.length - 1]?.id}`)
+
+            expect(res.status).toBe(200);
+        })
+
+        test('Test Deleting with the an ID that dont exist, expects 404', async() => {
+             
+             const res = await request(app)
+            .delete(`/movies/chdh3839-692b-4cfe-957f-ue8ie`)
+
+            expect(res.status).toBe(404);
         })
      })
 
