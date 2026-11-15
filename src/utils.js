@@ -9,8 +9,9 @@ function isEmpty(value) {
 // 1. FOR CREATE - POST /movies
 // Client is ONLY allowed to send: title, director, year
 export function validateCreateMovie(data) {
-  if (data.id !== undefined || data.watched !== undefined || data.createdAt !== undefined || data.updatedAt !== undefined) {
-    return { valid: false, message: "You cannot send id, watched, createdAt or updatedAt. They are set by the server." };
+ 
+  if (typeof data.watched !== 'boolean') {
+    return { valid: false, message: "Watched must be boolean" };
   }
 
   // Title - required, must be string, not empty

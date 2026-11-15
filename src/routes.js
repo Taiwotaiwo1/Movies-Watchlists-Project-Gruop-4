@@ -112,7 +112,10 @@ router.delete("/:id", async (req, res) =>{
             message: "Movie not found"
         });
     }
-    res.status(204).send();
+    res.status(200).json({
+        success: true,
+        message: "Movie Deleted Successfully!"
+    });
 });
 
 export default router;
