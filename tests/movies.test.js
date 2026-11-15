@@ -132,6 +132,12 @@ describe('Movies API', () => {
         });
      });
 
+     describe('DELETE /movies/:id', () => {
+        test('Deleting an existing user expects 204', async() => {
+            
+        })
+     })
+
 
 
     
