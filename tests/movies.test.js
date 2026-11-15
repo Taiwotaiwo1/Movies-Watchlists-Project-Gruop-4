@@ -78,7 +78,7 @@ describe('Movies API', () => {
         test('Validations: rejects invalid payload with 400', async () => {
         const res = await request(app)
             .post('/movies')
-            .send({});
+            .send({title: 420, director: true});
 
         expect(res.status).toBe(400);
         });
