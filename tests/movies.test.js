@@ -57,32 +57,82 @@ describe('Movies API', () => {
 
     // Test to Create a New Movie
     describe('POST /movies', () => {
-    test('creates a new movie', async () => {
-      const payload = {
-            title: "Fast and Furios 6",
-            director: "Tom Hank",
-            year: 2021,
-            watched: true
-        }
+        test('creates a new movie', async () => {
+        const payload = {
+                title: "Fast and Furios 6",
+                director: "Tom Hank",
+                year: 2021,
+                watched: true
+            }
 
-      const res = await request(app)
-        .post('/movies')
-        .set('Content-Type', 'application/json')
-        .send(payload);
+        const res = await request(app)
+            .post('/movies')
+            .set('Content-Type', 'application/json')
+            .send(payload);
 
-      expect(res.status).toBe(201);
-      expect(res.body.data).toMatchObject(payload);
-      expect(res.body.data).toHaveProperty('id');
-    });
+        expect(res.status).toBe(201);
+        expect(res.body.data).toMatchObject(payload);
+        expect(res.body.data).toHaveProperty('id');
+        });
 
-    test('rejects invalid payload with 400', async () => {
-      const res = await request(app)
-        .post('/movies')
-        .send({});
+        test('Validations: rejects invalid payload with 400', async () => {
+        const res = await request(app)
+            .post('/movies')
+            .send({});
 
-      expect(res.status).toBe(400);
-    });
-  });
+        expect(res.status).toBe(400);
+        });
+     });
+
+     //Tests to Edit/Update existing movie
+     describe('PUT /movies/:id', () => {
+        test('updating an existing movie', async () => {
+        const payload = {
+                title: "Fast and Furios 22",
+                director: "Mathew Stewart",
+                year: 2011,
+                watched: false
+            }
+
+        const res = await request(app)
+            .put('/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808')
+            .set('Content-Type', 'application/json')
+            .send(payload);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toMatchObject(payload);
+        expect(res.body.data).toHaveProperty('id');
+        });
+
+        test('updating with a movie id that do not exist expects 404', async () => {
+            const payload = {
+                    title: "Fast and Furios 22",
+                    director: "Mathew Stewart",
+                    year: 2011,
+                    watched: false
+                }
+
+            const res = await request(app)
+                .put('/movies/e46jdl956-9b95-4807-9220-b7f3ifee02ba')
+                .set('Content-Type', 'application/json')
+                .send(payload);
+
+            expect(res.status).toBe(404);
+        });
+
+        test('Validations: rejects invalid payload with 400', async () => {
+        const res = await request(app)
+            .put('/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808')
+            .send({
+                title: 200,
+                director: 890
+            });
+
+        expect(res.status).toBe(400);
+        });
+     });
+
+
 
     
 
