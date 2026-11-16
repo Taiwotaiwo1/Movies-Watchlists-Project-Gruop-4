@@ -312,12 +312,13 @@ curl -X DELETE http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
 
 | Name | Role | What they built |
 
-| Taiwo Taiwo | Routes + integration | `app.js`, `src/routes.js`
+| Ganiyu Taiwo Ibraheem | Routes + integration | `app.js`, `src/routes.js`
 
-| Ijinleifeoluwa Daniel Shadare | File storage | `src/services.js` — `readMovies`, `writeMovies`, `createMovie`, `getUnwatchedMovies` |
+| Ijinleifeoluwa Daniel Shadare | File storage | `src/services.js`,  `readMovies`, `writeMovies`, `createMovie`, `getUnwatchedMovies` |
 
-| God'spower |`updateMovie`, `deleteMovieById`
-| Henry Michael & Ishmail Abass kamara| Validation & Validator functions | `src/utils.js` — `validateCreateMovie`, `validateUpdateMovie` |
+| God'spower Ogheneovo James |`updateMovie`, `deleteMovieById`|
+
+| Henry Michael & Ishmail Abass kamara| Validation & Validator functions | `src/utils.js`, `validateCreateMovie`, `validateUpdateMovie` |
 
 | Fortune Uzoma | Testing | Manual endpoint testing, bug reports |
 
