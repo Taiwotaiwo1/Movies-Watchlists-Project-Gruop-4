@@ -12,18 +12,23 @@ import { validateCreateMovie, validateUpdateMovie } from './utils.js';
 const router = express.Router();
 
 // get all movies
-router.get("/", async(req, res) =>{
-  const movies = await getAllMovies();
+router.get("/", async(req, res, next) =>{
+  try{
+    const movies = await getAllMovies();
   res.status(200).json({
       success: true,
       count: movies.length,
       data: movies
   });
+} catch(error){
+    next(error);
+  }
 });
 
 // create movies:
-router.post("/", async (req, res) =>{
+router.post("/", async (req, res, next) =>{
     // 1. Validate incoming data for creation
+    try{
     const validation = validateCreateMovie(req.body);
     if (!validation.valid) {
         return res.status(400).json({
@@ -39,10 +44,14 @@ router.post("/", async (req, res) =>{
         message: "Movie created successfully",
         data: newMovie
     });
+} catch( error){
+    next(error);
+}
 });
 
 // get unwatched movies
-router.get("/unwatched", async (req, res)=>{
+router.get("/unwatched", async (req, res, next)=>{
+    try{
     const movies = await getUnwatchedMovies();
 
     res.status(200).json({
@@ -50,10 +59,14 @@ router.get("/unwatched", async (req, res)=>{
         count: movies.length,
         data: movies
     });
+} catch(error){
+    next(error);
+}
 });
 
 // get movie by id
-router.get("/:id", async (req, res)=>{
+router.get("/:id", async (req, res, next)=>{
+    try{
     const { id } = req.params;
     const movie = await getMovieById(id);
 
@@ -67,10 +80,14 @@ router.get("/:id", async (req, res)=>{
         success: true,
         data: movie
     });
+} catch(error){
+    next(error);
+}
 });
 
 // PUT update movie endpoint
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
+    try{
     const { id } = req.params;
 
     // 1. Validate incoming data
@@ -98,10 +115,14 @@ router.put("/:id", async (req, res) => {
         message: "Movie updated successfully",
         data: updatedMovie
     });
+} catch(error){
+    next(error);
+}
 });
 
 // delete movies
 router.delete("/:id", async (req, res) =>{
+    try{
     const { id } = req.params;
 
     const deleted = await deleteMovieById(id);
@@ -116,6 +137,9 @@ router.delete("/:id", async (req, res) =>{
         success: true,
         message: "Movie Deleted Successfully!"
     });
+} catch(error){
+    next(error)
+}
 });
 
 export default router;
