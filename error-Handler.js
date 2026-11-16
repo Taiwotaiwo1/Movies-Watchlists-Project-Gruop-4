@@ -7,4 +7,4 @@ res.status(err.status || 500).json({
 })
 };
 
-export default errorHandler
+export default errorHandler;
