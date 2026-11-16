@@ -7,6 +7,7 @@ const app = express();
 // Middleware to parse JSON from the body
 app.use(express.json());
 
+// middleware to handle error
 app.use(errorHandler);
 
 
