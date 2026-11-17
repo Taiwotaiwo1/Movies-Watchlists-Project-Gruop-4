@@ -9,6 +9,7 @@ A REST API for managing a personal movie watchlist, built with Node.js, Express,
 - Express 5
 - ES Modules (`import` / `export`)
 - `fs/promises` + `path` for file storage
+- Jest + Supertest for automated tests
 - `nodemon` for development
 
 ## Prerequisites
@@ -27,25 +28,38 @@ npm install
 ## Running the Project
 
 ```bash
-npm start      # runs: node app.js
-npm run dev    # runs: nodemon app.js (auto-restart on changes)
+npm start     
+npm run dev    
 ```
 
 The server listens on **http://localhost:3000**.
 All routes are prefixed with `/movies`.
 
+## Running Tests
+
+```bash
+npm test
+```
+
+Tests use **Jest** with **Supertest** and live in `tests/`. The test script runs Jest with `--experimental-vm-modules` so native ESM works without a Babel transform, and `--runInBand` so tests run sequentially — important because all tests share the same `data/movies.json` file.
+
 ## Project Structure
 
 ```text
 .
-├── app.js                 # Express app + server
+├── app.js                 # Express app (middleware + routes), exported
+├── server.js              # Entry point — imports app and starts the server
+├── error-Handler.js       # Express error-handling middleware
+├── jest.config.js         # Jest config (ESM, tests/**/*.test.js)
 ├── package.json
 ├── data/
 │   └── movies.json        # JSON "database"
-└── src/
-    ├── routes.js          # Express route handlers
-    ├── services.js        # File read/write + business logic
-    └── utils.js           # Validation helpers
+├── src/
+│   ├── routes.js          # Express route handlers
+│   ├── services.js        # File read/write + business logic
+│   └── utils.js           # Validation helpers
+└── tests/
+    └── movies.test.js     # Automated endpoint tests
 ```
 
 ## Data Model
@@ -72,7 +86,7 @@ Each movie is stored in `data/movies.json` as an object like:
 ## API Endpoints
 
 | Method | Endpoint | Description |
-
+| --- | --- | --- |
 | GET | `/movies` | List all movies |
 | GET | `/movies/unwatched` | List movies where `watched === false` (bonus) |
 | GET | `/movies/:id` | Get one movie by ID |
@@ -80,11 +94,11 @@ Each movie is stored in `data/movies.json` as an object like:
 | PUT | `/movies/:id` | Update an existing movie |
 | DELETE | `/movies/:id` | Delete a movie |
 
+---
+
 ### GET /movies
 
 Returns all movies.
-
-**Request**
 
 ```bash
 curl http://localhost:3000/movies
@@ -110,11 +124,11 @@ curl http://localhost:3000/movies
 }
 ```
 
+---
+
 ### GET /movies/unwatched
 
 Bonus endpoint. Returns only movies where `watched === false`.
-
-**Request**
 
 ```bash
 curl http://localhost:3000/movies/unwatched
@@ -127,18 +141,8 @@ curl http://localhost:3000/movies/unwatched
   "success": true,
   "count": 2,
   "data": [
-    {
-      "id": "e2f57c30-f97e-44b1-94f9-90d79eb74808",
-      "title": "The Demon Slayer",
-      "watched": false,
-      "...": "..."
-    },
-    {
-      "id": "1105bb91-e49e-430e-b83b-c3b012ea108a",
-      "title": "The Blacklists",
-      "watched": false,
-      "...": "..."
-    }
+    { "id": "e2f57c30-...", "title": "The Demon Slayer", "watched": false, "...": "..." },
+    { "id": "1105bb91-...", "title": "The Blacklists",  "watched": false, "...": "..." }
   ]
 }
 ```
@@ -148,8 +152,6 @@ curl http://localhost:3000/movies/unwatched
 ### GET /movies/:id
 
 Returns a single movie by its `id`.
-
-**Request**
 
 ```bash
 curl http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
@@ -178,6 +180,8 @@ curl http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
 { "success": false, "message": "Movie not found" }
 ```
 
+---
+
 ### POST /movies
 
 Creates a new movie. The server generates `id`, `watched`, `createdAt`, and `updatedAt`.
@@ -185,11 +189,7 @@ Creates a new movie. The server generates `id`, `watched`, `createdAt`, and `upd
 **Request body**
 
 ```json
-{
-  "title": "Inception",
-  "director": "Christopher Nolan",
-  "year": 2010
-}
+{ "title": "Inception", "director": "Christopher Nolan", "year": 2010 }
 ```
 
 ```bash
@@ -238,9 +238,7 @@ Updates an existing movie. Only provided fields are changed; `updatedAt` is refr
 **Request body (all fields optional)**
 
 ```json
-{
-  "watched": true
-}
+{ "watched": true }
 ```
 
 ```bash
@@ -286,13 +284,10 @@ curl -X PUT http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808 \
 { "success": false, "message": "Movie not found" }
 ```
 
----
 
 ### DELETE /movies/:id
 
 Deletes a movie by `id`.
-
-**Request**
 
 ```bash
 curl -X DELETE http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
@@ -306,7 +301,7 @@ curl -X DELETE http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
 { "success": false, "message": "Movie not found" }
 ```
 
----
+
 
 ## Team Members and Contributions
 
@@ -326,20 +321,22 @@ curl -X DELETE http://localhost:3000/movies/e2f57c30-f97e-44b1-94f9-90d79eb74808
 
 ## Known Issues / Limitations
 
-The current codebase works end-to-end, but the following issues remain.
+1. **Error-handler middleware is registered before routes.** In `app.js`, `app.use(errorHandler)` sits above `app.use("/movies", movieRoute)`. Express only runs error middleware that is registered *after* the route that throws — so route errors won't reach the custom JSON error handler; Express will fall back to its default HTML error page. **Fix:** move `app.use(errorHandler)` to the very bottom of `app.js`, below `app.use("/movies", movieRoute)`.
 
-1. **Debug `console.log` in `getUnwatchedMovies`.** `src/services.js` logs `movies: [...]` on every request to `/movies/unwatched`. Should be removed.
-2. **No central error handling.** Route handlers do not wrap async logic in `try/catch`, and there is no Express error-handling middleware. An unexpected file or parse error will surface as a default Express 500 response with a stack trace.
-3. **No 404 handler for unknown routes.** Requesting e.g. `GET /nope` returns Express's default HTML 404 page rather than a JSON error.
+2. **Unknown extra fields are accepted on PUT.** `validateUpdateMovie` only checks known fields; extra keys in the body are copied onto the movie by `updateMovie`.
+
+3. **`test` script uses `--experimental-vm-modules`.** Required for native-ESM Jest and only works on Node 18+. Documented in "Running Tests" above.
 
 ## Manual Testing Checklist
 
 ```bash
 npm start
-# then, in a second terminal:
+# in a second terminal:
+npm test                       # automated
 curl http://localhost:3000/movies
 ```
 
+- [ ] `npm test` passes
 - [ ] `GET /movies` returns 200 with an array
 - [ ] `POST /movies` with valid body returns 201
 - [ ] `POST /movies` missing `title` returns 400 (`"Title is required"`)
@@ -351,5 +348,6 @@ curl http://localhost:3000/movies
 - [ ] `PUT /movies/:id` with `watched: "yes"` returns 400
 - [ ] `DELETE /movies/:id` returns 204, then `GET` returns 404
 - [ ] `GET /movies/unwatched` returns only movies where `watched === false`
+
 
 Repository: https://github.com/Taiwotaiwo1/Movies-Watchlists-Project-Gruop-4
